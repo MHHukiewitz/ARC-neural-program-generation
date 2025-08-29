@@ -1,167 +1,162 @@
 # ARC Neural Program Generation
 
-A neural program generation project for solving the Abstraction and Reasoning Corpus (ARC) challenge. This project explores machine learning approaches to solve abstract reasoning tasks that require understanding patterns and generating program-like solutions.
+This repository contains tools and data structures for working with the ARC (Abstraction and Reasoning Corpus) dataset for neural program generation research.
 
-## 🎯 Project Overview
-
-The ARC (Abstraction and Reasoning Corpus) challenge tests AI systems' ability to acquire new skills and solve novel problems through pattern recognition and abstract reasoning. This project implements neural approaches to generate programs or rules that can solve ARC tasks.
-
-### Key Features
-- 🧠 Neural program synthesis for abstract reasoning
-- 📊 Complete ARC dataset loading and analysis
-- 🎨 Grid visualization and pattern analysis tools
-- 🔧 Modular architecture for different neural approaches
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 ARC-neural-program-generation/
-├── data/                                    # ARC dataset files
-│   ├── arc-agi_training_challenges.json    # Training tasks (3.8MB)
-│   ├── arc-agi_training_solutions.json     # Training solutions (0.6MB)
-│   ├── arc-agi_evaluation_challenges.json  # Evaluation tasks (0.9MB)
-│   ├── arc-agi_evaluation_solutions.json   # Evaluation solutions (0.2MB)
-│   ├── arc-agi_test_challenges.json        # Test tasks (1.0MB)
-│   ├── sample_submission.json              # Sample submission format
-│   └── arc-prize-2025.zip                  # Complete dataset archive
-├── models/                                  # Neural model implementations (empty - ready for your models!)
-├── sample.ipynb                            # Main analysis and experimentation notebook
-├── requirements.txt                        # Python dependencies
-└── README.md                              # This file
+├── src/                          # Modular Python package
+│   ├── __init__.py              # Package initialization and exports
+│   ├── grid.py                  # ARCGrid and ARCExample classes
+│   ├── task.py                  # ARCTask class
+│   ├── dataset.py               # ARCDataset class for data loading
+│   └── analysis.py              # Analysis utilities and functions
+├── data/                        # ARC dataset files
+│   ├── arc-agi_training_challenges.json
+│   ├── arc-agi_training_solutions.json
+│   ├── arc-agi_evaluation_challenges.json
+│   ├── arc-agi_evaluation_solutions.json
+│   └── arc-agi_test_challenges.json
+├── sample.ipynb                 # Original comprehensive analysis notebook
+├── example_usage.ipynb          # Clean example using modular structure
+├── requirements.txt             # Python dependencies
+└── README.md                    # This file
 ```
 
-## 🚀 Quick Setup
-
-### Prerequisites
-- [Anaconda](https://www.anaconda.com/products/distribution) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-- Python 3.13+
+## Quick Start
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd ARC-neural-program-generation
-   ```
-
-2. **Create and activate conda environment**
-   ```bash
-   conda create -n arc-neural-program-generation python=3.13 -y
-   conda activate arc-neural-program-generation
-   ```
-
-3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Launch Jupyter notebook**
-   ```bash
-   jupyter notebook sample.ipynb
-   ```
+### Basic Usage
 
-## 📦 Dependencies
+```python
+# Import the main classes
+from src import ARCDataset, ARCGrid, ARCTask
 
-- **torch** (2.8.0) - Deep learning framework
-- **torchvision** (0.23.0) - Computer vision utilities
-- **numpy** (2.3.2) - Numerical computing
-- **matplotlib** (3.10.5) - Plotting and visualization
+# Load the dataset
+dataset = ARCDataset()
+dataset.load_training_data()
+dataset.load_evaluation_data()
 
-## 🔍 Dataset Overview
+# Get a specific task
+task = dataset.get_task('00576224')
 
-The ARC dataset contains abstract reasoning tasks where each task includes:
+# Access grid properties
+print(f"Test input shape: {task.test_input.shape}")
+print(f"Colors used: {task.test_input.unique_colors}")
+print(f"Total cells: {task.test_input.size}")
 
-- **Input grids**: Small colored grids (typically 3x3 to 30x30)
-- **Output grids**: Expected transformations of the input
-- **Training examples**: 1-4 input/output pairs per task
-- **Test input**: A single grid to transform (solution not provided)
+# Visualize a grid
+task.test_input.visualize("Test Input")
+```
 
-### Dataset Stats
-- **Training set**: ~400 tasks with solutions
-- **Evaluation set**: ~400 tasks with solutions  
-- **Test set**: ~100 tasks (solutions withheld for competition)
-- **Total**: ~900 unique reasoning challenges
+### Analysis Functions
 
-## 🛠 Key Components
+```python
+from src import (
+    analyze_grid_sizes,
+    find_tasks_by_color_count,
+    find_shape_preserving_tasks,
+    detailed_grid_size_analysis,
+    find_30x30_grids
+)
 
-### ARCGrid Class
-The core data structure for handling ARC grids with features:
-- Grid validation and shape checking
-- Color/pattern analysis utilities
-- Visualization capabilities
-- NumPy integration for numerical operations
+# Analyze grid size distribution
+sizes = analyze_grid_sizes(dataset, "training")
 
-### Data Loading Pipeline
-- JSON dataset parsing
-- Task structure validation
-- Efficient grid representation
-- Batch processing capabilities
+# Find specific types of tasks
+binary_tasks = find_tasks_by_color_count(dataset, 2)  # Tasks with only 2 colors
+shape_preserving = find_shape_preserving_tasks(dataset)  # Input/output same size
+large_grids = find_30x30_grids(dataset)  # Maximum size grids
 
-## 🎨 Visualization Features
+# Comprehensive analysis
+grid_data, shape_data = detailed_grid_size_analysis(dataset, "training")
+```
 
-The project includes rich visualization tools:
-- **Grid rendering**: Color-coded cell visualization
-- **Pattern analysis**: Highlighting transformations
-- **Statistical plots**: Color distributions, grid sizes
-- **Interactive exploration**: Jupyter-based analysis
+## Core Classes
 
-## 🧪 Getting Started
+### ARCGrid
+Represents a single grid with analysis methods:
+- **Properties**: `shape`, `height`, `width`, `size`, `unique_colors`, `color_counts`
+- **Methods**: `visualize()`, `to_numpy()`, `get_cell()`
 
-1. **Explore the dataset**:
-   Open `sample.ipynb` and run the initial cells to load and examine ARC tasks
+### ARCExample  
+Represents an input-output pair:
+- **Properties**: `input_shape`, `output_shape`, `shape_change`
+- **Methods**: `visualize()` (side-by-side)
 
-2. **Visualize tasks**:
-   Use the built-in visualization tools to understand task patterns
+### ARCTask
+Represents a complete task with training examples and test case:
+- **Properties**: `num_train_examples`, `all_colors_used`, `consistent_shape_change`
+- **Methods**: `get_stats()`, `visualize()`
 
-3. **Implement your approach**:
-   Add your neural models in the `models/` directory
+### ARCDataset
+Main class for loading and managing the entire dataset:
+- **Methods**: `load_training_data()`, `load_evaluation_data()`, `get_task()`, `get_dataset_stats()`
 
-4. **Experiment**:
-   Use the notebook environment to test and iterate on your solutions
+## Analysis Functions
 
-## 🏆 ARC Challenge Context
+### Grid Size Analysis
+- `analyze_grid_sizes()`: Basic size distribution statistics
+- `detailed_grid_size_analysis()`: Comprehensive analysis with shape frequencies
+- `analyze_size_categories()`: Categorize grids by size ranges
+- `find_size_outliers()`: Find unusually large/small grids
 
-The ARC challenge tests three key capabilities:
-1. **Core Knowledge**: Basic understanding of objects, counting, spatial relationships
-2. **Broad Generalization**: Ability to apply learning to novel situations  
-3. **Few-shot Learning**: Learning from very few examples (1-4 demonstrations)
+### Task Classification
+- `find_tasks_by_color_count()`: Tasks using specific number of colors
+- `find_shape_preserving_tasks()`: Tasks where input/output shapes match
+- `find_30x30_grids()`: Find maximum-size grids
 
-This makes it an ideal testbed for neural program synthesis, meta-learning, and abstract reasoning approaches.
+## Dataset Statistics
 
-## 🔬 Research Directions
+Based on the training and evaluation sets:
 
-Potential approaches to explore:
-- **Neural Module Networks**: Compositional reasoning
-- **Program Synthesis**: Learning to generate transformation rules
-- **Meta-Learning**: Few-shot adaptation to new tasks
-- **Graph Neural Networks**: Spatial relationship modeling
-- **Transformer Architectures**: Sequence-to-sequence transformations
+### Grid Sizes
+- **Range**: 1 to 900 cells (1×1 to 30×30)
+- **Average**: ~186 cells
+- **Distribution**:
+  - Tiny (1-9 cells): 10.1%
+  - Small (10-49 cells): 19.5% 
+  - Medium (50-225 cells): 47.0%
+  - Large (226-400 cells): 14.2%
+  - Extra Large (401-900 cells): 9.2%
 
-## 📈 Hardware Requirements
+### Key Insights for Neural Program Generation
+1. **Memory Planning**: Support up to 900 cells per grid
+2. **Input Representation**: Maximum dimensions 30×30, most grids much smaller
+3. **Architecture**: 61.7% square grids, need to handle rectangular effectively
+4. **Processing**: Most computation on small-medium grids (66.6% ≤225 cells)
+5. **Model Capacity**: Handle 514 unique grid shapes across datasets
 
-- **CPU**: Any modern processor (training may be slow)
-- **GPU**: CUDA or Apple Silicon (MPS) recommended for faster training
-- **Memory**: 8GB+ RAM recommended for larger models
-- **Storage**: ~10GB for datasets and model checkpoints
+## Example Notebooks
 
-## 🤝 Contributing
+- **`sample.ipynb`**: Original comprehensive analysis with all functionality inline
+- **`example_usage.ipynb`**: Clean example using the modular structure
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Add your neural model implementations to `models/`
-4. Document your approach in the notebook
-5. Submit a pull request
+## Neural Program Generation Applications
 
-## 📚 References
+This codebase provides the foundation for:
+- **Data Loading**: Efficient loading and preprocessing of ARC tasks
+- **Grid Analysis**: Understanding size distributions and complexity patterns  
+- **Task Classification**: Identifying different types of reasoning patterns
+- **Visualization**: Interactive exploration of tasks and transformations
+- **Benchmarking**: Systematic evaluation of neural program synthesis models
 
-- [ARC Challenge](https://arcprize.org/) - Official challenge page
-- [Original ARC Paper](https://arxiv.org/abs/1911.01547) - Chollet, François. "On the Measure of Intelligence"
-- [ARC Dataset](https://github.com/fchollet/ARC) - Official dataset repository
+The modular structure makes it easy to extend with new analysis functions, integrate into training pipelines, and adapt for specific research needs.
 
-## 📄 License
+## Contributing
 
-[MIT License](https://opensource.org/licenses/MIT)
+The codebase is organized for easy extension:
+1. Add new grid analysis methods to `src/grid.py`
+2. Add new task-level analysis to `src/task.py` 
+3. Add new dataset-wide analysis functions to `src/analysis.py`
+4. Update `src/__init__.py` to export new functions
 
----
+## License
 
-Ready to tackle abstract reasoning? Start exploring the notebook and build your neural program generator! 🚀
+This project is part of ARC neural program generation research.
