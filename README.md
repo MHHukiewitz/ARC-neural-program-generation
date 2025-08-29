@@ -40,7 +40,7 @@ ARC-neural-program-generation/
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/MHHukiewitz/ARC-neural-program-generation.git
    cd ARC-neural-program-generation
    ```
 
