@@ -28,6 +28,19 @@ ARC-neural-program-generation/
 
 ### Installation
 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/MHHukiewitz/ARC-neural-program-generation.git
+   cd ARC-neural-program-generation
+   ```
+
+2. **Create and activate conda environment**
+   ```bash
+   conda create -n arc-neural-program-generation python=3.13 -y
+   conda activate arc-neural-program-generation
+   ```
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
